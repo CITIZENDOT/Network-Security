@@ -149,27 +149,27 @@ First of all, let's discuss ARP briefly. ARP stands for Address Resolution Proto
 Inside a network, hosts communicate using MAC addresses. Communication between different networks is carried out through Network Address Translation (NAT). ARP is used to get a particular host's MAC address with their IP address.
 
 ARP includes two types of operations:
-1. **Request**: Host broadcasts a message asking who has a particular IP address.
-2. **Response**: The host who has the IP corresponding to a request responds with it's IP address.
+1. **Request**: The host broadcasts a message asking who has a particular IP address.
+2. **Response**: The host with the IP corresponding to a request responds with its IP address.
 
 ### Attack
 
 Fundamentally, ARP is flawed, but we don't have a choice.
-- Hosts do not verify whether the packet actually came from the host mentioned in packet's header.
-- Hosts acts on a response even if it did not request the corresponding IP.
+- Hosts do not verify whether the packet came from the host mentioned in the packet's header.
+- Hosts act on a response even if it did not request the corresponding IP.
 
-We can implement digital signatures as a solution to the first problem and a timeout for the second issue. But the thing is, ARP is used on a very low-end CPU's and also high-end CPU's alike. Implementing digital signatures.
+We can implement digital signatures to solve the first problem and a timeout for the second issue. But the thing is, ARP is used on very low-end and high-end CPUs. Implementing digital signatures.
 
 ### Response Spoofing
 
 ![](https://i.imgur.com/JFtH9CQ.png)
 
-We will utilise the fact that, host's do not verify the sender is actually the sender or not. We'll send spoofed response packets in which we corrupt the sender's address.
+We will utilize the fact that hosts do not verify whether the sender is actually the sender or not. We'll send spoofed response packets in which we corrupt the sender's address.
 
-```python
+```python=
 def spoof(victim2_MAC, victim1_MAC):
     scapy.send(scapy.ARP(op=2, pdst=victim1_IP, psrc=victim2_IP, hwdst=victim1_MAC))
     scapy.send(scapy.ARP(op=2, pdst=victim2_IP, psrc=victim1_IP, hwdst=victim2_MAC))
 ```
 
-We're sending two packet's in which we're setting the fake source address.
+We're sending two packets in which we're setting the fake source address.
